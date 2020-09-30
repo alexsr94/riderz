@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
-import Riderz from '../img/riderz.png';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import Riderz from "../img/riderz.png";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import {
   Form,
   Button,
@@ -9,17 +9,17 @@ import {
   Col,
   Image,
   Alert,
-} from 'react-bootstrap';
-import Layout from '../components/layout';
-import Loader from '../components/Loader';
-import { UserContext } from '../context/userContext';
-import { FaCheckCircle, FaFacebook } from 'react-icons/fa';
+} from "react-bootstrap";
+import Layout from "../components/layout";
+import Loader from "../components/Loader";
+import { UserContext } from "../context/userContext";
+import { FaCheckCircle, FaFacebook } from "react-icons/fa";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useContext(UserContext);
   const [login, setLogin] = useState({
-    loginEmail: '',
-    password: '',
+    loginEmail: "",
+    password: "",
   });
 
   const history = useHistory();
@@ -27,36 +27,39 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const [errMsg, setErrMsg] = useState(false);
-  const errMsgCompleteFields = 'Please complete all the fields';
+  const errMsgCompleteFields = "Please complete all the fields";
 
   async function handleLogin(e) {
     e.preventDefault();
-    if (login.loginEmail === '' || login.password === '') {
+    if (login.loginEmail === "" || login.password === "") {
       setErrMsg(true);
     } else {
       setLoading(true);
-      const fetchData = await fetch('http://localhost:7000/users/login', {
-        method: 'POST',
+      const fetchData = await fetch("/users/login", {
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Access-Control-Allow-Headers': '*',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "*",
+          "Access-Control-Allow-Headers": "*",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...login }),
       });
       const response = await fetchData.json();
-      const res = await response;
-      const { token, succes } = await res;
-      
+      console.log(response);
+
+      const { token, status, currentUser } = response;
 
       if (token) {
-        localStorage.setItem('token', token);
         setIsLoggedIn(true);
-        return history.push('/dashboard');
+        if (currentUser.labels[0] === "newUser") {
+          return history.push("/firststep");
+        } else {
+          return history.push("/dashboard");
+        }
       } else {
-        return history.push('/login');
+        return history.push("/login");
       }
     }
   }
@@ -116,7 +119,7 @@ function App() {
                       variant="primary"
                       type="submit"
                       className="px-5 py-2 d-block btn-block rounded-pill"
-                      style={{ backgroundColor: '#05387e', border: 'none' }}
+                      style={{ backgroundColor: "#05387e", border: "none" }}
                       onClick={handleLogin}
                     >
                       Login
@@ -127,7 +130,7 @@ function App() {
                       variant="primary"
                       type="submit"
                       className="px-5 py-2 mb-5 d-block btn-block rounded-pill"
-                      style={{ backgroundColor: '#187cb8', border: 'none' }}
+                      style={{ backgroundColor: "#187cb8", border: "none" }}
                     >
                       <FaFacebook /> Login with Facebook
                     </Button>
@@ -139,7 +142,7 @@ function App() {
               <Row>
                 <Col md={{ span: 6, offset: 3 }}>
                   <h1 className="font-bold azul-oscuro text-center mb-5">
-                    Don't worry and{' '}
+                    Don't worry and{" "}
                     <span className="verde-claro font-bold">simplify</span> your
                     life as a freelancer
                   </h1>
@@ -166,18 +169,19 @@ function App() {
                     <FaCheckCircle /> File your taxes with our agency
                   </p>
                   <Link to="/signup">
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="px-5 py-2 d-block btn-block rounded-pill mt-5"
-                    style={{
-                      backgroundColor: 'transparent',
-                      color: '#26a64d',
-                      border: '1px solid #26a64d',
-                    }}
-                  >
-                    Sign Up
-                  </Button></Link>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      className="px-5 py-2 d-block btn-block rounded-pill mt-5"
+                      style={{
+                        backgroundColor: "transparent",
+                        color: "#26a64d",
+                        border: "1px solid #26a64d",
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
                 </Col>
               </Row>
             </Col>
@@ -185,7 +189,7 @@ function App() {
         </Container>
       </Layout>
     </>
-  )
+  );
 }
 
 export default App;

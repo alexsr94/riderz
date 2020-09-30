@@ -1,24 +1,35 @@
-import React, {useState} from 'react';
-import DLayout from '../components/dashboardLayout';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import NavLogo from '../img/navLogoAzul.png';
-import DummyImg from '../img/profile-dummy.png';
-import { Link } from 'react-router-dom';
-import upadloadIcon from '../img/uploadIcon.png';
+import React, { useState } from "react";
+import DLayout from "../components/dashboardLayout";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import NavLogo from "../img/navLogoAzul.png";
+import DummyImg from "../img/profile-dummy.png";
+import { Link } from "react-router-dom";
+import upadloadIcon from "../img/uploadIcon.png";
 
 export default function Dashboard() {
+  const [name, setName] = useState(" ");
+  (function () {
+    fetch("/dashboardbe").then((res) => {
+      res.json().then((obj) => {
+        console.log(res, obj);
+        setName(obj.name);
+      });
+    });
+  })();
   return (
     <DLayout>
       <Container fluid id="dashboardContainer">
         <Row>
           <Col md={2} id="sidenav" className="shadow ">
             <div className="sidenavHeader p-4 d-flex flex-column justify-content-center align-items-center">
-              <Link to="/"><img src={NavLogo} className="mb-3 " /></Link>
+              <Link to="/">
+                <img src={NavLogo} className="mb-3 " />
+              </Link>
               <img
                 src="https://www.w3schools.com/howto/img_avatar.png"
                 className="avatar img-fluid mb-3"
               />
-              <small className="ml-2">Alexei Garban</small>
+              <small className="ml-2">{name}</small>
             </div>
             <div className="dashboardNav">
               <Link className="azul-oscuro font-weight-bold active">
@@ -66,7 +77,9 @@ export default function Dashboard() {
                     <span>3</span> Send id!
                   </p>
                   <hr></hr>
-                  <Link to="/createinvoice" className="accountBtn">Start</Link>
+                  <Link to="/createinvoice" className="accountBtn">
+                    Start
+                  </Link>
                 </div>
                 <div className="dashboardCreateInvoice"></div>
               </Col>
@@ -120,8 +133,6 @@ export default function Dashboard() {
                 </div>
               </Col>
             </Row>
-
-           
 
             <section className="dashboardFooter py-5">
               <Container>
